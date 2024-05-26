@@ -37,16 +37,21 @@ class CameraSource(ImageSource):
 
         self.cam_id = cam_id
 
-        if d_show:
-            self.video_cap = cv2.VideoCapture(cam_id, cv2.CAP_DSHOW)
-        else:
-            self.video_cap = cv2.VideoCapture(cam_id)
+#        if d_show:
+#            self.video_cap = cv2.VideoCapture(cam_id, cv2.CAP_DSHOW)
+#        else:
+        self.video_cap = cv2.VideoCapture(0)
+        print(self.video_cap, cam_id)
 
         self.video_writer_old = None
         self.video_writer_new = None
         self.date_init = None
         self.save_video = save_video
+        self.video_cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+        self.video_cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+        self.video_cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         self.fps = self.video_cap.get(cv2.CAP_PROP_FPS)
+        print("fps: ", self.fps)
         if self.fps == 0:
             self.fps = 20
         self.frames_written = 0
@@ -72,13 +77,15 @@ class CameraSource(ImageSource):
         video_name = 'Videos/video_out_' + str(self.cam_id) + '_' + date + '.mp4'
         self.frames_written = 0
         self.video_writer_new = cv2.VideoWriter(video_name, fourcc, self.fps, (w, h))
+        print("가능한가?", (video_name, fourcc, self.fps, (w, h)))
 
     def set_parameter(self, param, value):
         self.check_video_feed()
 
         if not self.is_video:  # Do not need to set parameters on videos
-            self.video_cap.set(param, value)
-            self.save_video_minute()
+            print("@@@ set_param")
+            #self.video_cap.set(param, value)
+            #self.save_video_minute()
 
     def check_video_feed(self):
         if self.video_cap is None:
@@ -87,6 +94,7 @@ class CameraSource(ImageSource):
     def get_frame(self):
         self.check_video_feed()
         ret, img = self.video_cap.read()
+        print('@@@ video_cap ret', ret)
 
         if ret:
             if self.flip_vertical:
@@ -117,12 +125,13 @@ class CameraSource(ImageSource):
         return ret
 
     def flush_unsaved_video(self):
-        self.video_writer_new.release()
+        if self.video_writer_new:
+            self.video_writer_new.release()
         self.video_writer_new = None
 
     def save_video_minute(self):
-
-        self.video_writer_new.release()
+        if self.video_writer_new:
+            self.video_writer_new.release()
 
         self.video_writer_new = None
 

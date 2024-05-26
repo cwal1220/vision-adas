@@ -8,7 +8,7 @@ from paho import mqtt
 import logging
 import os
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+# logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 # Details for MQTT HiveMQ server
 USER_NAME = 'mcmaster'
@@ -31,7 +31,7 @@ class MQTTClient(Client):
     def __init__(self, client_id):
         Client.__init__(self, client_id)
 
-        self.logger = logging.getLogger(__name__)
+        # self.logger = logging.getLogger(__name__)
 
         self.client = paho.Client(client_id=client_id, userdata=None, protocol=paho.MQTTv5)
         self.last_message = ''

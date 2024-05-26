@@ -22,7 +22,7 @@ from flags import field_experiment
 from flags import communication_v2v
 
 # open up our test file we can set this to be a webcam or video
-cap = CameraSource(cam_id=1, save_video=True, d_show=True)
+cap = CameraSource(cam_id=0, save_video=True, d_show=True)
 output_sink = ImageSink(fps=20, sink_name='Model Output')
 
 mqtt_client = None
@@ -120,7 +120,6 @@ def get_frames():
     Returns appropriate frames for openpilot model input from defined image source.
     :return: Tuple of 2 frames (frame_1, frame_2) for input into openpilot model (numpy array)
     """
-
     ret1, frame_1 = cap.get_frame()
     ret2, frame_2 = cap.get_frame()
 

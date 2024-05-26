@@ -43,12 +43,13 @@ class ImageSink:
             self.save_video_interval()
 
     def flush_unsaved_video(self):
-
-        self.video_writer.release()
+        if self.video_writer:
+            self.video_writer.release()
         self.video_writer = None
 
     def save_video_interval(self):
-        self.video_writer.release()
+        if self.video_writer:
+            self.video_writer.release()
         self.video_writer = None
 
         self.init_video_writer()
